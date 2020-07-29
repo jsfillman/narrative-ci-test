@@ -3,66 +3,11 @@
 - [x] Fix existing SHA check (skip if exists)
 - [x] Try with hard-coded appnames for prod (and tag_env?)
 
-#### Tagged `next` after `appdev` built
-```
-(For Appdev)
-MY_SHA: c10b825
-PULL_NUMBER: pull_1
-APP_VERSION_NUM: 
-TEST_APP: jsfillman/narrative-ci-test/narrative-ci-test-testing
-MY_DEV_APP: jsfillman/narrative-ci-test/narrative-ci-test-appdev
-MY_NEXT_APP: jsfillman/narrative-ci-test/narrative-ci-test-next
-MY_CI_APP: jsfillman/narrative-ci-test/narrative-ci-test-ci
-MY_PROD_APP: jsfillman/narrative-ci-test/narrative-ci-test-prod
-MY_USER: jsfillman
-MY_GPR: narrative-ci-test
-ISDEV: 0
-ISNEXT: 0
-ISCI: 0
-ISPROD: 0
-```
 
-```
-(For Next)
-MY_SHA: c10b825
-PULL_NUMBER: pull_1
-APP_VERSION_NUM: 
-TEST_APP: jsfillman/narrative-ci-test/narrative-ci-test-testing
-MY_DEV_APP: jsfillman/narrative-ci-test/narrative-ci-test-appdev
-MY_NEXT_APP: jsfillman/narrative-ci-test/narrative-ci-test-next
-MY_CI_APP: jsfillman/narrative-ci-test/narrative-ci-test-ci
-MY_PROD_APP: jsfillman/narrative-ci-test/narrative-ci-test-prod
-MY_USER: jsfillman
-MY_GPR: narrative-ci-test
-ISDEV: 0
-ISNEXT: 0
-ISCI: 0
-ISPROD: 0
-```
-
-### Untagged `appdev` and started again (next still tagged)
-
-```
-MY_SHA: c10b825
-PULL_NUMBER: pull_1
-APP_VERSION_NUM: 
-TEST_APP: jsfillman/narrative-ci-test/narrative-ci-test-testing
-MY_DEV_APP: jsfillman/narrative-ci-test/narrative-ci-test-appdev
-MY_NEXT_APP: jsfillman/narrative-ci-test/narrative-ci-test-next
-MY_CI_APP: jsfillman/narrative-ci-test/narrative-ci-test-ci
-MY_PROD_APP: jsfillman/narrative-ci-test/narrative-ci-test-prod
-MY_USER: jsfillman
-MY_GPR: narrative-ci-test
-ISDEV: 0
-ISNEXT: 0
-ISCI: 0
-ISPROD: 0
-```
-
-- Ok, so obviously not checking for SHA tags in the GPR. Let's fix that
+- Workflow is not correctly checking for SHA tags in the GPR. Let's fix that!
 - Testing from a new PR, to see if initial build creates SHA
 
-### SHA tracing
+## SHA tracing
 
 - Initial build tags with SHA `sha-24e3f0d`
 - Looks like `env.ISDEV < 1` portion isn't working
