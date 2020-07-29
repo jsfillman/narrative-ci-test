@@ -1,1 +1,1 @@
-Testing a new CI workflow.
+Testing new CI workflow.
