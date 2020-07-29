@@ -35,9 +35,8 @@ jobs:
     - name: Check for existing images
       run: |
         echo ::set-env name=ISDEV::$(curl -s https://github.com/jsfillman/narrative-ci-test/packages/334089/versions | grep -c $MY_SHA | wc -l)
-        echo ::set-env name=ISNEXT::$(curl -sL -X POST https://api.github.com/graphql -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }} " -d '{"query":"query{repository(owner:\"jsfillman\",name:\"sdk_ci_demopy\"){registryPackages(first:100,registryPackageType:\"DOCKER\",name: \"sdk_ci_demopy-next\"){nodes{versions(first:100){nodes{version}}}}}}"}' | jq . | grep -c $MY_SHA)
-        echo ::set-env name=ISCI::$(curl -sL -X POST https://api.github.com/graphql -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }} " -d '{"query":"query{repository(owner:\"jsfillman\",name:\"sdk_ci_demopy\"){registryPackages(first:100,registryPackageType:\"DOCKER\",name: \"sdk_ci_demopy-ci\"){nodes{versions(first:100){nodes{version}}}}}}"}' | jq . | grep -c $MY_SHA)
-        echo ::set-env name=ISPROD::$(curl -sL -X POST https://api.github.com/graphql -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }} " -d '{"query":"query{repository(owner:\"jsfillman\",name:\"sdk_ci_demopy\"){registryPackages(first:100,registryPackageType:\"DOCKER\",name: \"sdk_ci_demopy-prod\"){nodes{versions(first:100){nodes{version}}}}}}"}' | jq . | grep -c $MY_SHA)
+        echo ::set-env name=ISNEXT::$(curl -s https://github.com/jsfillman/narrative-ci-test/packages/334090/versions | grep -c $MY_SHA | wc -l)
+        echo ::set-env name=ISCI::$(curl -s https://github.com/jsfillman/narrative-ci-test/packages/334212/versions | grep -c $MY_SHA | wc -l)
 
 
 ## Confirm variables
@@ -102,17 +101,3 @@ jobs:
         docker push docker.pkg.github.com/$MY_CI_APP:sha-$MY_SHA
         docker push docker.pkg.github.com/$MY_CI_APP:$GITHUB_HEAD_REF
         docker push docker.pkg.github.com/$MY_CI_APP:$PULL_NUMBER
-
-
-
-    # - name: Tag Prod
-    #   if: github.event.action == 'closed' && github.event.pull_request.merged == true
-    #   run: |
-    #     docker login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} docker.pkg.github.com
-    #     docker pull docker.pkg.github.com/$TEST_APP:sha-$MY_SHA
-    #     docker tag docker.pkg.github.com/$TEST_APP:sha-$MY_SHA docker.pkg.github.com/$MY_PROD_APP:latest
-    #     docker tag docker.pkg.github.com/$MY_PROD_APP:sha-$MY_SHA docker.pkg.github.com/$MY_PROD_APP:sha-$MY_SHA
-    #     docker push docker.pkg.github.com/$MY_PROD_APP:sha-$MY_SHA
-    #     docker push docker.pkg.github.com/$MY_PROD_APP:latest
-
-# echo ::set-env name=ISDEV=$(curl -s https://github.com/jsfillman/sdk_ci_demopy/packages/334086/versions | grep -c $MY_SHA)
