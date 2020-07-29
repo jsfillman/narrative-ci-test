@@ -34,7 +34,7 @@ jobs:
 ## TODO: Replace `registryPackages` with `$VERSIONS` or newer equivalent
     - name: Check for existing images
       run: |
-        echo ::set-env name=ISDEV=$(curl -s https://github.com/jsfillman/sdk_ci_demopy/packages/334086/versions | grep -c $MY_SHA)
+        echo ::set-env name=ISDEV=::$(curl -s https://github.com/jsfillman/sdk_ci_demopy/packages/334086/versions | grep -c $MY_SHA)
         echo ::set-env name=ISNEXT::$(curl -sL -X POST https://api.github.com/graphql -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }} " -d '{"query":"query{repository(owner:\"jsfillman\",name:\"sdk_ci_demopy\"){registryPackages(first:100,registryPackageType:\"DOCKER\",name: \"sdk_ci_demopy-next\"){nodes{versions(first:100){nodes{version}}}}}}"}' | jq . | grep -c $MY_SHA)
         echo ::set-env name=ISCI::$(curl -sL -X POST https://api.github.com/graphql -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }} " -d '{"query":"query{repository(owner:\"jsfillman\",name:\"sdk_ci_demopy\"){registryPackages(first:100,registryPackageType:\"DOCKER\",name: \"sdk_ci_demopy-ci\"){nodes{versions(first:100){nodes{version}}}}}}"}' | jq . | grep -c $MY_SHA)
         echo ::set-env name=ISPROD::$(curl -sL -X POST https://api.github.com/graphql -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }} " -d '{"query":"query{repository(owner:\"jsfillman\",name:\"sdk_ci_demopy\"){registryPackages(first:100,registryPackageType:\"DOCKER\",name: \"sdk_ci_demopy-prod\"){nodes{versions(first:100){nodes{version}}}}}}"}' | jq . | grep -c $MY_SHA)
