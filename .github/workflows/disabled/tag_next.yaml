@@ -1,0 +1,52 @@
+name: Tag Next Environment
+
+on:
+  pull_request:
+    types: [ labeled ]
+
+jobs:
+
+  docker_retag:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Check out GitHub Repo
+      uses: actions/checkout@v2
+
+
+    - name: Set App Version and Repo Name
+      run: |
+        echo ::set-env name=APP_VERSION_NUM::$(sed -n '/module-version:/{n;p;}' kbase.yml | sed 's/ //g')
+        echo ::set-env name=MY_APP::$(echo ${GITHUB_REPOSITORY}/$(echo $GITHUB_REPOSITORY | awk -F / '{print $2}' | sed -e "s/:refs//")"-testing")
+        echo ::set-env name=MY_BRANCH::$(git branch --show-current)
+        echo ::set-env name=MY_SHA::$(git rev-parse --short=7 HEAD)
+
+
+## Set target Docker image based on new pull request label
+
+    - name: Set Next Target
+      if: contains( github.event.pull_request.labels.*.name, 'next')
+      run: |
+        echo ::set-env name=MY_APP::$(echo ${GITHUB_REPOSITORY}/$(echo $GITHUB_REPOSITORY | awk -F / '{print $2}' | sed -e "s/:refs//")"-next")
+        echo "Set Next"
+
+## Confirm variables
+
+    - name: Verify Version and Repo Name
+      run: |
+        echo "Version:" $APP_VERSION_NUM
+        echo "App:" $MY_APP
+        echo "Repo:" $GITHUB_REPOSITORY
+        echo "Branch:" $MY_BRANCH
+        echo "SHA:" $MY_SHA
+
+## Tag and push to GPR
+        
+    - name: Tag Environment
+      if: contains( github.event.pull_request.labels.*.name, 'next') 
+      run: |
+        docker login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} docker.pkg.github.com
+        docker pull docker.pkg.github.com/jsfillman/sdk_ci_demopy/sdk_ci_demopy-testing:sha-$MY_SHA
+        docker tag docker.pkg.github.com/jsfillman/sdk_ci_demopy/sdk_ci_demopy-testing:sha-$MY_SHA docker.pkg.github.com/jsfillman/sdk_ci_demopy/sdk_ci_demopy-next:sha-$MY_SHA
+        docker tag docker.pkg.github.com/jsfillman/sdk_ci_demopy/sdk_ci_demopy-next:sha-$MY_SHA latest
+        docker push docker.pkg.github.com/jsfillman/sdk_ci_demopy/sdk_ci_demopy-next:sha-$MY_SHA
