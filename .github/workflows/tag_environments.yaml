@@ -13,6 +13,8 @@ jobs:
 
     - name: Check out GitHub Repo
       uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
 
 
     - name: Set App Version and Name Vars
@@ -44,6 +46,7 @@ jobs:
       run: |
         echo "Version:" $APP_VERSION_NUM
         echo "Repo:" $GITHUB_REPOSITORY
+        echo "Head SHA:" ${{ github.event.pull_request.head.sha }}
         echo "SHA:" $MY_SHA
         echo "Image count dev:" $ISDEV
         echo "Image count next:" $ISNEXT
