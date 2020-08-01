@@ -1,1 +1,1 @@
-Testing new narrative CI workflow.
+Testing a new narrative CI workflow.
